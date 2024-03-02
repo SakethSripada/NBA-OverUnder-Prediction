@@ -28,4 +28,3 @@ def prepare_features(df):
     features = df[expected_columns].copy()
     return features
 
-

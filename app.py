@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from playerdata import get_player_stats, prepare_features
 from model import predict_performance, train_and_save_model
 import joblib
@@ -25,3 +25,8 @@ def predict(player_name, threshold):
     message = f"Probability of {player_name} scoring over {threshold} points: {prob_over}"
     print(message)
     return message
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
