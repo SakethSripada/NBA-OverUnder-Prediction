@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash
 from playerdata import get_player_stats, prepare_features
 from model import predict_performance, train_and_save_model
+from flask_wtf import FlaskForm
 import joblib
 import logging
 import os
@@ -13,14 +14,13 @@ logging.basicConfig(filename='app.log',
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
-
 STAT_TYPE_MAPPING = {
     'Points': 'PTS',
-    'Field Goals Made': 'FGM',
+    'FG Made': 'FGM',
     'Field Goals Attempted': 'FGA',
-    'Three-Point Field Goals Made': 'FG3M',
+    '3PT Made': 'FG3M',
     'Three-Point Field Goals Attempted': 'FG3A',
-    'Free Throws Made': 'FTM',
+    'FT Made': 'FTM',
     'Free Throws Attempted': 'FTA',
     'Rebounds': 'REB',
     'Assists': 'AST',
@@ -32,10 +32,12 @@ STAT_TYPE_MAPPING = {
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    if request.method == 'POST':
+    form = FlaskForm()
+    if form.validate_on_submit():
         logging.info("Form submitted")
 
         player_name = request.form['playerName']
+        over_under = request.form['overUnder']
         threshold = float(request.form['numberEntry'])
         stat_type = request.form['statType']
         stat_type = STAT_TYPE_MAPPING.get(stat_type, stat_type)
@@ -77,13 +79,16 @@ def home():
         logging.info("Features extracted successfully")
 
         logging.info(f"Making prediction for {player_name}")
-        prob_over = predict_performance(model, latest_features)
-        logging.info(f"Prediction made successfully: {prob_over}")
+        prob = predict_performance(model, latest_features)
+        if over_under == "Under":
+            prob_under = 1 - prob
+            prediction = f"Probability of {player_name} scoring over {threshold} {stat_type.lower()}: {prob_under:.2f}"
+            logging.info(prediction)
+        elif over_under == "Over":
+            prediction = f"Probability of {player_name} scoring over {threshold} {stat_type.lower()}: {prob:.2f}"
+            logging.info(prediction)
 
-        message = f"Probability of {player_name} scoring over {threshold} {stat_type.lower()}: {prob_over:.2f}"
-        logging.info("Rendering template with message")
-        return render_template('index.html', message=message)
+        return render_template('index.html', form=form)
 
     else:
-        logging.info("Rendering home page")
-        return render_template('index.html')
+        return render_template('index.html', form=form)

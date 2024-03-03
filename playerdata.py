@@ -26,5 +26,6 @@ def prepare_features(df):
         df[col] = 0
 
     features = df[expected_columns].copy()
+    print(features)
     return features
 
