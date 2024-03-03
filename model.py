@@ -5,13 +5,16 @@ from playerdata import get_player_stats, prepare_features
 import joblib
 
 
-def train_and_save_model(player_name, threshold):
+def train_and_save_model(player_name, threshold, stat_type='PTS'):
     df = get_player_stats(player_name)
     features_df = prepare_features(df)
 
-    features_df["Over_Under"] = (features_df["PTS"] > threshold).astype(int)
+    if stat_type not in features_df.columns:
+        raise ValueError(f"{stat_type} is not a valid column in the features DataFrame.")
 
-    X = features_df.drop(['PTS'], axis=1)
+    features_df["Over_Under"] = (features_df[stat_type] > threshold).astype(int)
+
+    X = features_df.drop([stat_type], axis=1)
     y = features_df['Over_Under']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -24,7 +27,7 @@ def train_and_save_model(player_name, threshold):
     print(f'Confusion Matrix:\n{confusion_matrix(y_test, y_pred)}')
     print(f'Classification Report:\n{classification_report(y_test, y_pred)}')
 
-    joblib.dump(model, f"logistic_regression_model_{threshold}.pkl")
+    joblib.dump(model, f"logistic_regression_model_{threshold}_{stat_type}.pkl")
 
 
 def predict_performance(model, features):

@@ -42,14 +42,14 @@
     <h1>NBA Over/Under Prediction</h1>
 
     <h2>Make a Prediction</h2>
-    <form action="/your-server-endpoint" method="post" id="prediction_form">
+    <form action="/" method="post" id="prediction_form">
     <label for="playerName">NBA Player Name:</label>
     <input type="text" id="playerName" name="playerName" required><br><br>
 
     <label for="numberEntry">Number to predict for:</label>
     <input type="number" id="numberEntry" name="numberEntry" required step="any"><br><br>
 
-    <label for="statType">Select Type:</label>
+    <label for="statType">Select Stat:</label>
     <input list="types" id="statType" name="statType" required>
     <datalist id="types">
         <option value="Points">
