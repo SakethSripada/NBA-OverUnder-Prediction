@@ -29,3 +29,8 @@ def prepare_features(df):
     print(features)
     return features
 
+
+def get_matching_players(query):
+    player_dict = players.get_players()
+    matching_players = [player['full_name'] for player in player_dict if query.lower() in player['full_name'].lower()]
+    return matching_players

@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, flash
-from playerdata import get_player_stats, prepare_features
+from flask import Flask, render_template, request, flash, jsonify
+from playerdata import get_player_stats, prepare_features, get_matching_players
 from model import predict_performance, train_and_save_model
 from flask_wtf import FlaskForm
 import joblib
@@ -92,3 +92,10 @@ def home():
 
     else:
         return render_template('index.html', form=form)
+
+
+@app.route('/search_players')
+def search_players():
+    query = request.args.get('query')
+    matching_players = get_matching_players(query)
+    return jsonify(matching_players)
