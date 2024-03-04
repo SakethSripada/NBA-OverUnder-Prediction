@@ -60,3 +60,7 @@ footer {
     text-align: center;
     padding: 20px 10px;
 }
+
+.show {
+    display: block !important;
+}

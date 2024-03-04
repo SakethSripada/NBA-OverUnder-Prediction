@@ -87,9 +87,7 @@ def home():
         elif over_under == "Over":
             prediction = f"Probability of {player_name} scoring over {threshold} {stat_type.lower()}: {prob:.2f}"
             logging.info(prediction)
-
-        return render_template('index.html', form=form)
-
+        return prediction
     else:
         return render_template('index.html', form=form)
 
