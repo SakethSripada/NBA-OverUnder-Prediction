@@ -34,7 +34,6 @@ def predict_performance(model, features):
     probabilities = model.predict_proba(features.reshape(1, -1))
     return probabilities[0][1]
 
-# Example usage:
 # train_and_save_model('LeBron James', 15)
 # model = joblib.load("logistic_regression_model.pkl")
-# prediction = predict_performance(model, features)  # 'features' need to be provided as a numpy array
+# prediction = predict_performance(model, features)  
